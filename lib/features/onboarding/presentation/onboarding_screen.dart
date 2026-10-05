@@ -247,7 +247,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               : AppColors.white,
                           fontFamily: "DMSans-Regular",
                           fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),

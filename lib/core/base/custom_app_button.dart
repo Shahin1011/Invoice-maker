@@ -7,6 +7,7 @@ class CustomAppButton extends StatelessWidget {
   final VoidCallback? onTap;
   final Color textColor;
   final Color? backgroundColor;
+  final Color? borderColor;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final double? width;
@@ -19,6 +20,7 @@ class CustomAppButton extends StatelessWidget {
     this.onTap,
     this.textColor = Colors.white,
     this.backgroundColor,
+    this.borderColor,
     this.prefixIcon,
     this.suffixIcon,
     this.width,
@@ -32,9 +34,10 @@ class CustomAppButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width ?? double.infinity,
-        padding: padding ?? EdgeInsets.symmetric(vertical: 16.h),
+        padding: padding ?? EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.mainAppColor,
+          border: borderColor != null ? Border.all(color: borderColor!) : null,
           borderRadius: BorderRadius.circular(
             borderRadius?.r ?? 12.r,
           ),
@@ -52,8 +55,8 @@ class CustomAppButton extends StatelessWidget {
               text,
               style: TextStyle(
                 fontFamily: 'DMSans-Regular',
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w400,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
                 color: textColor,
               ),
               textAlign: TextAlign.center,

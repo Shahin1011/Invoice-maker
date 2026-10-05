@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:quick_invoice/features/clients/presentation/pages/clients_screen.dart';
 import 'package:quick_invoice/features/invoices/presentation/pages/invoices_screen.dart';
 import 'package:quick_invoice/features/items/presentation/pages/items_screen.dart';
@@ -83,8 +82,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             _navItem(AppIcons.homeU,  AppIcons.homeS, "Home", 0),
             _navItem(AppIcons.invoiceU,        AppIcons.invoiceS,  "Invoices",  1),
             _navItem(AppIcons.clientU,     AppIcons.clientS, "Clients", 2),
-            _navItem(AppIcons.itemsU,      AppIcons.invoiceS,  "Items",  3),
-            _navItem(AppIcons.moreU,      AppIcons.moreS,  "More",  3),
+            _navItem(AppIcons.itemsU,      AppIcons.itemsS,  "Items",  3),
+            _navItem(AppIcons.moreU,      AppIcons.moreS,  "More",  4),
           ],
         ),
       ),
@@ -97,8 +96,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       String label,
       int index,
       ) {
-    final bool isSelected = selectedIndex == index;
-
     return BottomNavigationBarItem(
       label: label,
       icon: SvgPicture.asset(
@@ -110,13 +107,18 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           BlendMode.srcIn,
         ),
       ),
-      activeIcon: SvgPicture.asset(
-        selected,
-        height: 23,
-        width: 23,
-        colorFilter:const  ColorFilter.mode(
-          AppColors.mainAppColor,
-          BlendMode.srcIn,
+      activeIcon: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
+        child: SvgPicture.asset(
+          selected,
+          key: ValueKey<String>(selected),
+          height: 23,
+          width: 23,
+          colorFilter: const ColorFilter.mode(
+            AppColors.mainAppColor,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

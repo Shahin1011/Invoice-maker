@@ -64,6 +64,7 @@ dependencies:
   intl_phone_number_input: ^0.7.5
   country_picker: ^2.0.28
   upgrader: ^13.5.0
+  currency_picker: 2.0.22
 
 dev_dependencies:
   flutter_test:

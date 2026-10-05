@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:quick_invoice/core/base/appText.dart';
+import 'package:quick_invoice/core/base/custom_app_button.dart';
 import 'package:quick_invoice/core/base/custom_text_field.dart';
 import 'package:quick_invoice/core/utils/app_colors.dart';
+import 'package:currency_picker/currency_picker.dart';
+import 'package:get/get.dart';
+import 'package:quick_invoice/core/route/route.dart';
 
 class BusinessSetupScreen extends StatefulWidget {
   const BusinessSetupScreen({super.key});
@@ -11,16 +15,13 @@ class BusinessSetupScreen extends StatefulWidget {
 }
 
 class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
-      child: AppText(
-        text,
-        color: const Color(0xFF64748B), // Greyish blue
-        fontSize: 12,
-        fontWeight: FontWeight.w600,
-      ),
-    );
+  bool _showMore = false;
+  final TextEditingController _currencyController = TextEditingController(text: 'USD — \$ — US Dollar');
+
+  @override
+  void dispose() {
+    _currencyController.dispose();
+    super.dispose();
   }
 
   @override
@@ -92,91 +93,131 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
                 ),
               ),
 
-              _buildLabel('BUSINESS NAME *'),
+              _buildLabel('Business Name'),
               const CustomTextField(
                 hintText: 'e.g. ABC Company',
               ),
 
-              _buildLabel('BUSINESS OWNER NAME'),
+              _buildLabel('Business Owner Name'),
               const CustomTextField(
                 hintText: 'e.g. John Smith',
               ),
 
-              _buildLabel('PHONE NUMBER'),
+              _buildLabel('Phone Number'),
               const CustomTextField(
                 hintText: '+1 555 000 0000',
                 keyboardType: TextInputType.phone,
               ),
 
-              _buildLabel('EMAIL'),
+              _buildLabel('Email'),
               const CustomTextField(
                 hintText: 'hello@yourbusiness.com',
                 keyboardType: TextInputType.emailAddress,
               ),
 
-              _buildLabel('BUSINESS ADDRESS'),
+              _buildLabel('Business Address'),
               const CustomTextField(
                 hintText: 'Enter your complete business address\ne.g. 123 Main St, New York, NY 10001',
                 maxLines: 3,
               ),
 
-              _buildLabel('CURRENCY *'),
+              _buildLabel('Currency'),
               CustomTextField(
-                hintText: 'USD — \$ — US Dollar',
+                textEditingController: _currencyController,
                 readOnly: true,
                 suffixIcon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF64748B)),
+                onTap: () {
+                  showCurrencyPicker(
+                    context: context,
+                    showFlag: true,
+                    showCurrencyName: true,
+                    showCurrencyCode: true,
+                    theme: CurrencyPickerThemeData(
+                      inputDecoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        hintText: 'Search',
+                        hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+                        prefixIcon: const Icon(Icons.search, size: 20, color: Color(0xFF64748B)),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: AppColors.mainAppColor),
+                        ),
+                      ),
+                    ),
+                    onSelect: (Currency currency) {
+                      _currencyController.text = '${currency.code} — ${currency.symbol} — ${currency.name}';
+                    },
+                  );
+                },
               ),
 
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  const Icon(Icons.keyboard_arrow_down, size: 18, color: AppColors.mainAppColor),
-                  const SizedBox(width: 4),
-                  AppText(
-                    'Show more',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.mainAppColor,
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 32),
-              
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Action
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.secondaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showMore = !_showMore;
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      _showMore ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                      size: 18,
                       color: AppColors.mainAppColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
                     ),
-                  ),
+                    const SizedBox(width: 4),
+                    AppText(
+                      _showMore ? 'Collapse' : 'Show more',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.mainAppColor,
+                    ),
+                  ],
                 ),
               ),
-              
-              const SizedBox(height: 24),
+              if (_showMore) ...[
+                _buildLabel('Website'),
+                const CustomTextField(
+                  hintText: 'https://yourbusiness.com',
+                ),
+                _buildLabel('Tax / VAT Number'),
+                const CustomTextField(
+                  hintText: 'Enter tax or VAT number',
+                ),
+                _buildLabel('Payment Information'),
+                const CustomTextField(
+                  hintText: 'Bank Name\nAccount Name\nAccount Number',
+                  maxLines: 3,
+                ),
+                _buildLabel('Business Registration Number'),
+                const CustomTextField(
+                  hintText: 'Enter registration number',
+                ),
+              ],
+              const SizedBox(height: 32),
+              CustomAppButton(
+                text: "Continue",
+                textColor: AppColors.mainAppColor,
+                backgroundColor: AppColors.secondaryColor,
+                onTap: () {
+                  Get.offAllNamed(AppRoutes.bottomNavScreen);
+                },
+              ),
+
+              const SizedBox(height: 20),
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    // Skip action
+                    Get.offAllNamed(AppRoutes.bottomNavScreen);
                   },
                   child: AppText(
                     'Skip for Now',
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF64748B),
                   ),
@@ -186,6 +227,18 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
+      child: AppText(
+        text,
+        color: const Color(0xFF647477),
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
