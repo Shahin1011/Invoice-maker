@@ -58,7 +58,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             top: BorderSide(color: Color(0xFFE3E6F0), width: 1),
           ),
         ),
-        height: MediaQuery.of(context).size.height * 0.12,
         child: BottomNavigationBar(
           elevation: 0,
           type: BottomNavigationBarType.fixed,

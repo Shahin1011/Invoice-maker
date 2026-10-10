@@ -227,7 +227,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 );
               },
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
             // Version text
             const Text(
               'Version 1.0',
@@ -236,7 +236,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 fontSize: 12,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 10),
           ],
         ),
       ),

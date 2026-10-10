@@ -86,7 +86,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
         ),
-        description: 'Get clear insights with simple reports and\nkeep track of your payments, outstanding\ninvoices, and more.',
+        description: 'Get clear insights with simple reports and keep track of your payments, outstanding invoices, and more.',
       ),
     ];
   }
@@ -199,7 +199,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
             // Bottom Section (Indicators and Button)
             Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
                   // Indicators

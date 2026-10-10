@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:quick_invoice/core/base/appText.dart';
 import 'package:quick_invoice/core/base/custom_app_button.dart';
 import 'package:quick_invoice/core/base/custom_text_field.dart';
 import 'package:quick_invoice/core/utils/app_colors.dart';
 import 'package:currency_picker/currency_picker.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:quick_invoice/core/route/route.dart';
 
@@ -17,10 +20,24 @@ class BusinessSetupScreen extends StatefulWidget {
 class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
   bool _showMore = false;
   final TextEditingController _currencyController = TextEditingController(text: 'USD — \$ — US Dollar');
+  final TextEditingController _phoneController = TextEditingController();
+  File? _logoImage;
+  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
+
+  Future<void> _pickLogo() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _logoImage = File(image.path);
+      });
+    }
+  }
 
   @override
   void dispose() {
     _currencyController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -42,7 +59,7 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
               ),
               const SizedBox(height: 8),
               AppText(
-                'Add a few details to personalize your invoices. You\ncan complete the rest later.',
+                'Add a few details to personalize your invoices. You can complete the rest later.',
                 fontSize: 14,
                 color: const Color(0xFF64748B),
                 fontWeight: FontWeight.w400,
@@ -50,46 +67,57 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
               const SizedBox(height: 16),
               
               _buildLabel('BUSINESS LOGO'),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+              GestureDetector(
+                onTap: _pickLogo,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                          image: _logoImage != null
+                              ? DecorationImage(
+                                  image: FileImage(_logoImage!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: _logoImage == null
+                            ? const Icon(Icons.camera_alt_outlined, color: Color(0xFF64748B), size: 20)
+                            : null,
                       ),
-                      child: const Icon(Icons.camera_alt_outlined, color: Color(0xFF64748B), size: 20),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppText(
-                            'Add your logo',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.mainAppColor,
-                          ),
-                          const SizedBox(height: 4),
-                          AppText(
-                            'Personalizes your invoices. Tap to\nupload and preview.',
-                            fontSize: 12,
-                            color: const Color(0xFF94A3B8),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ],
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppText(
+                              'Add your logo',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.mainAppColor,
+                            ),
+                            const SizedBox(height: 4),
+                            AppText(
+                              'Personalizes your invoices. Tap to\nupload and preview.',
+                              fontSize: 12,
+                              color: const Color(0xFF94A3B8),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
-                  ],
+                      const Icon(Icons.chevron_right, color: Color(0xFF94A3B8)),
+                    ],
+                  ),
                 ),
               ),
 
@@ -104,9 +132,72 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
               ),
 
               _buildLabel('Phone Number'),
-              const CustomTextField(
-                hintText: '+1 555 000 0000',
-                keyboardType: TextInputType.phone,
+              Theme(
+                data: Theme.of(context).copyWith(
+                  primaryColor: AppColors.mainAppColor,
+                  colorScheme: const ColorScheme.light(primary: AppColors.mainAppColor),
+                ),
+                child: InternationalPhoneNumberInput(
+                  onInputChanged: (PhoneNumber number) {
+                    _phoneNumber = number;
+                  },
+                  searchBoxDecoration: InputDecoration(
+                    hintText: 'Search by country name or dial code',
+                    hintStyle: const TextStyle(
+                      fontFamily: 'DMSans-Regular',
+                      fontSize: 14,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                  selectorConfig: const SelectorConfig(
+                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    setSelectorButtonAsPrefixIcon: true,
+                    leadingPadding: 12,
+                    useBottomSheetSafeArea: true,
+                  ),
+                  ignoreBlank: false,
+                  autoValidateMode: AutovalidateMode.disabled,
+                  selectorTextStyle: const TextStyle(
+                    fontFamily: 'DMSans-Regular',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.mainAppColor,
+                  ),
+                  textStyle: const TextStyle(
+                    fontFamily: 'DMSans-Regular',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.mainAppColor,
+                  ),
+                  initialValue: _phoneNumber,
+                  textFieldController: _phoneController,
+                  formatInput: true,
+                  keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+                  inputDecoration: InputDecoration(
+                    hintText: '555 000 0000',
+                    hintStyle: const TextStyle(
+                      fontFamily: 'DMSans-Regular',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.borderColor,
+                    ),
+                    filled: true,
+                    fillColor: AppColors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: AppColors.mainAppColor, width: 1),
+                    ),
+                  ),
+                ),
               ),
 
               _buildLabel('Email'),

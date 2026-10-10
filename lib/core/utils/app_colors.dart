@@ -12,7 +12,7 @@ class AppColors {
 
 
 
-  static const borderColor = Color(0xFF9ABFC8);
+  static const borderColor = Color(0xFF94A3B8);
   static const foundationColor = Color(0xFF4D4D4D);
   static const Color textColor_01 = Color(0xFF60A5FA);
   static const Color subHeadingColor = Color(0xFF585858);

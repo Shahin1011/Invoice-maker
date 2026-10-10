@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path/path.dart';
 
 import '../utils/app_colors.dart';
 
@@ -89,8 +90,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
       textInputAction: widget.textInputAction,
       cursorColor: widget.cursorColor,
       style: widget.inputTextStyle ??
-          GoogleFonts.inter(
-            fontSize: 16,
+          const TextStyle(
+            fontFamily: 'DMSans-Regular',
+            fontSize: 14,
             fontWeight: FontWeight.w500,
             color: AppColors.mainAppColor,
           ),
@@ -103,9 +105,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
       decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: widget.hintStyle ??
-              GoogleFonts.inter(
+              const TextStyle(
+                  fontFamily: 'DMSans-Regular',
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   color: AppColors.borderColor,
               ),
           fillColor: widget.fillColor,
@@ -125,17 +128,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     : Color(0xFFB1B1B1),
                 size: 20,
               ),
-
-              /*SvgPicture.asset(
-                    obscureText ? AppIcons.eyeOff : AppIcons.eye,
-                    height: 22,
-                    width: 22,
-                    color: AppColors.black,
-                  ),*/
             ),
           )
               : widget.suffixIcon,
           suffixIconColor: widget.suffixIconColor,
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 40,
+            minHeight: 0,
+          ),
+          suffixIconConstraints: const BoxConstraints(
+            minWidth: 40,
+            minHeight: 0,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(widget.fieldBorderRadius),
             borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
@@ -148,6 +152,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius: BorderRadius.circular(widget.fieldBorderRadius),
             borderSide: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
           ),
+          isDense: widget.isDens,
           contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 12,
