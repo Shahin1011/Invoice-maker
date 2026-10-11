@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:quick_invoice/features/clients/presentation/pages/clients_screen.dart';
 import 'package:quick_invoice/features/invoices/presentation/pages/invoices_screen.dart';
+import 'package:quick_invoice/features/invoices/presentation/pages/new_invoice_screen.dart';
 import 'package:quick_invoice/features/more/presentation/pages/more_screen.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
@@ -17,15 +18,15 @@ class AppRoutes {
   static const String clientsScreen = "/clients_screen";
   static const String itemsScreen = "/items_screen";
   static const String moreScreen = "/more_screen";
-
+  static const String newInvoiceScreen = "/new_invoice_screen";
 
   static List<GetPage> routes = [
     GetPage(name: bottomNavScreen, page: () => BottomNavScreen()),
     GetPage(name: splashScreen, page: () => SplashScreen()),
     GetPage(name: homeScreen, page: () => HomeScreen()),
     GetPage(name: invoicesScreen, page: () => InvoicesScreen()),
+    GetPage(name: newInvoiceScreen, page: () => const NewInvoiceScreen()),
     GetPage(name: clientsScreen, page: () => ClientsScreen()),
     GetPage(name: moreScreen, page: () => MoreScreen()),
-
   ];
 }

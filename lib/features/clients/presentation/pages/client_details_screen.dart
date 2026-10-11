@@ -68,25 +68,43 @@ class ClientDetailsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppText(
-                          client['name'],
+                          client['name'] ?? '',
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textColor1,
                         ),
                         SizedBox(height: 4.h),
                         AppText(
-                          'ABC Company',
+                          client['company'] ?? 'ABC Company',
                           fontSize: 14,
                           color: const Color(0xFF64748B),
                         ),
                         SizedBox(height: 8.h),
-                        _buildInfoRow(Icons.email_outlined, 'hefzur@gmail.com'),
+                        _buildInfoRow(
+                          Icons.email_outlined,
+                          (client['email'] != null && (client['email'] as String).isNotEmpty)
+                              ? client['email']
+                              : 'hefzur@gmail.com',
+                        ),
                         SizedBox(height: 4.h),
-                        _buildInfoRow(Icons.phone_outlined, '+88013565886'),
+                        _buildInfoRow(
+                          Icons.phone_outlined,
+                          (client['phone'] != null && (client['phone'] as String).isNotEmpty)
+                              ? client['phone']
+                              : '+88013565886',
+                        ),
                         SizedBox(height: 4.h),
-                        _buildInfoRow(null, 'House 24, Road 7, Dhanmondi, Dhaka,\nBangladesh'),
+                        _buildInfoRow(
+                          null,
+                          (client['address'] != null && (client['address'] as String).isNotEmpty)
+                              ? client['address']
+                              : 'House 24, Road 7, Dhanmondi, Dhaka,\nBangladesh',
+                        ),
                         SizedBox(height: 4.h),
-                        _buildInfoRow(null, 'Tax / VAT: 123456789'),
+                        _buildInfoRow(
+                          null,
+                          'Tax / VAT: ${client['tax'] ?? '123456789'}',
+                        ),
                       ],
                     ),
                   ),

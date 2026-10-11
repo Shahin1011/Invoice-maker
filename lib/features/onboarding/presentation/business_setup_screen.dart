@@ -11,7 +11,8 @@ import 'package:get/get.dart';
 import 'package:quick_invoice/core/route/route.dart';
 
 class BusinessSetupScreen extends StatefulWidget {
-  const BusinessSetupScreen({super.key});
+  final bool isFromInvoice;
+  const BusinessSetupScreen({super.key, this.isFromInvoice = false});
 
   @override
   State<BusinessSetupScreen> createState() => _BusinessSetupScreenState();
@@ -19,6 +20,8 @@ class BusinessSetupScreen extends StatefulWidget {
 
 class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
   bool _showMore = false;
+  final TextEditingController _businessNameController = TextEditingController();
+  final TextEditingController _ownerNameController = TextEditingController();
   final TextEditingController _currencyController = TextEditingController(text: 'USD — \$ — US Dollar');
   final TextEditingController _phoneController = TextEditingController();
   File? _logoImage;
@@ -36,6 +39,8 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
 
   @override
   void dispose() {
+    _businessNameController.dispose();
+    _ownerNameController.dispose();
     _currencyController.dispose();
     _phoneController.dispose();
     super.dispose();
@@ -45,26 +50,45 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      appBar: widget.isFromInvoice
+          ? AppBar(
+              backgroundColor: AppColors.mainAppColor,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+                onPressed: () => Get.back(),
+              ),
+              title: AppText(
+                'Add Business',
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              centerTitle: true,
+            )
+          : null,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppText(
-                'Set Up Your Business',
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textColor1,
-              ),
-              const SizedBox(height: 8),
-              AppText(
-                'Add a few details to personalize your invoices. You can complete the rest later.',
-                fontSize: 14,
-                color: const Color(0xFF64748B),
-                fontWeight: FontWeight.w400,
-              ),
-              const SizedBox(height: 16),
+              if (!widget.isFromInvoice) ...[
+                AppText(
+                  'Set Up Your Business',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textColor1,
+                ),
+                const SizedBox(height: 8),
+                AppText(
+                  'Add a few details to personalize your invoices. You can complete the rest later.',
+                  fontSize: 14,
+                  color: const Color(0xFF64748B),
+                  fontWeight: FontWeight.w400,
+                ),
+                const SizedBox(height: 16),
+              ],
               
               _buildLabel('BUSINESS LOGO'),
               GestureDetector(
@@ -122,12 +146,14 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
               ),
 
               _buildLabel('Business Name'),
-              const CustomTextField(
+              CustomTextField(
+                textEditingController: _businessNameController,
                 hintText: 'e.g. ABC Company',
               ),
 
               _buildLabel('Business Owner Name'),
-              const CustomTextField(
+              CustomTextField(
+                textEditingController: _ownerNameController,
                 hintText: 'e.g. John Smith',
               ),
 
@@ -292,28 +318,40 @@ class _BusinessSetupScreenState extends State<BusinessSetupScreen> {
               ],
               const SizedBox(height: 32),
               CustomAppButton(
-                text: "Continue",
+                text: widget.isFromInvoice ? "Save Business" : "Continue",
                 textColor: AppColors.mainAppColor,
                 backgroundColor: AppColors.secondaryColor,
                 onTap: () {
-                  Get.offAllNamed(AppRoutes.bottomNavScreen);
+                  if (widget.isFromInvoice) {
+                    final bName = _businessNameController.text.trim();
+                    final oName = _ownerNameController.text.trim();
+                    final result = {
+                      'name': bName.isEmpty ? 'My Business' : bName,
+                      'owner': oName.isEmpty ? 'Owner' : oName,
+                    };
+                    Get.back(result: result);
+                  } else {
+                    Get.offAllNamed(AppRoutes.bottomNavScreen);
+                  }
                 },
               ),
 
-              const SizedBox(height: 20),
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Get.offAllNamed(AppRoutes.bottomNavScreen);
-                  },
-                  child: AppText(
-                    'Skip for Now',
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF64748B),
+              if (!widget.isFromInvoice) ...[
+                const SizedBox(height: 20),
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.offAllNamed(AppRoutes.bottomNavScreen);
+                    },
+                    child: AppText(
+                      'Skip for Now',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF64748B),
+                    ),
                   ),
                 ),
-              ),
+              ],
               const SizedBox(height: 24),
             ],
           ),

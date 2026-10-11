@@ -7,6 +7,8 @@ import 'package:quick_invoice/core/base/custom_text_field.dart';
 import 'package:quick_invoice/core/utils/app_colors.dart';
 import 'package:quick_invoice/features/clients/presentation/pages/client_details_screen.dart';
 
+import 'package:quick_invoice/features/clients/presentation/widgets/add_client_bottom_sheet.dart';
+
 class ClientsScreen extends StatefulWidget {
   const ClientsScreen({super.key});
 
@@ -253,178 +255,14 @@ class _ClientsScreenState extends State<ClientsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
       ),
       builder: (context) {
-        return const _AddClientBottomSheet();
+        return AddClientBottomSheet(
+          onClientSaved: (newClient) {
+            setState(() {
+              clients.add(newClient);
+            });
+          },
+        );
       },
-    );
-  }
-}
-
-class _AddClientBottomSheet extends StatefulWidget {
-  const _AddClientBottomSheet();
-
-  @override
-  State<_AddClientBottomSheet> createState() => _AddClientBottomSheetState();
-}
-
-class _AddClientBottomSheetState extends State<_AddClientBottomSheet> {
-  bool _showMore = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppText(
-                  'Add Client',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textColor1,
-                ),
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.close, color: Color(0xFF64748B)),
-                ),
-              ],
-            ),
-            const Divider(color: Color(0xFFE2E8F0)),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 16.h),
-                    _buildLabel('Name *'),
-                    const CustomTextField(hintText: 'Enter your client name'),
-                    _buildLabel('Company'),
-                    const CustomTextField(hintText: 'Enter company name'),
-                    _buildLabel('Email'),
-                    const CustomTextField(hintText: 'hello@yourbusiness.com'),
-                    _buildLabel('Phone Number'),
-                    const CustomTextField(hintText: '+1 555 000 0000'),
-                    SizedBox(height: 16.h),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _showMore = !_showMore;
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            _showMore ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                            size: 18,
-                            color: AppColors.mainAppColor,
-                          ),
-                          SizedBox(width: 4.w),
-                          AppText(
-                            _showMore ? 'Collapse' : 'Show more',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.mainAppColor,
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_showMore) ...[
-                      _buildLabel('Address'),
-                      const CustomTextField(hintText: 'Enter address'),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildLabel('City'),
-                                const CustomTextField(hintText: ''),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildLabel('State'),
-                                const CustomTextField(hintText: ''),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildLabel('Postal Code'),
-                                const CustomTextField(hintText: ''),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildLabel('Country'),
-                                const CustomTextField(hintText: ''),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      _buildLabel('Tax / VAT Number'),
-                      const CustomTextField(hintText: ''),
-                    ],
-                    SizedBox(height: 32.h),
-                    CustomAppButton(
-                      text: 'Add Client',
-                      textColor: AppColors.textColor1,
-                      backgroundColor: AppColors.secondaryColor,
-                      onTap: () {
-                        Get.back();
-                      },
-                    ),
-                    SizedBox(height: 16.h),
-                    CustomAppButton(
-                      text: 'Cancel',
-                      textColor: const Color(0xFF64748B),
-                      backgroundColor: Colors.white,
-                      borderColor: const Color(0xFFE2E8F0),
-                      onTap: () {
-                        Get.back();
-                      },
-                    ),
-                    SizedBox(height: 32.h),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h, top: 16.h),
-      child: AppText(
-        text,
-        color: const Color(0xFF647477),
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
     );
   }
 }
